@@ -6,7 +6,7 @@ Leopold Serpe lserp2@uic.edu
 Project 2 Submission 1:
 Github link: https://github.com/jcrosby3uic/ece366-project1
 
-How to Run:
+How to Run Fib & Odd Functions:
 Step 1) Run Program
 Step 2) Respond to prompt with input N
 Step 3) read result from screen 
