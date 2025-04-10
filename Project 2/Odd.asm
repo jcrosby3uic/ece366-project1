@@ -1,61 +1,48 @@
 .data
-prompt:     .asciiz "Enter a number: "
-true_msg:   .asciiz "true\n"
-false_msg:  .asciiz "false\n"
-
 .text
 .globl main
 
+# --------------------
+# Function: is_odd
+# Determines if a number is odd using repeated subtraction
+# Input : $t1 = n
+# Output: $t2 = 1 if odd, 0 if even
+# --------------------
+
 main:
-    # Print prompt to user
-    li $v0, 4                # syscall 4 = print string
-    la $a0, prompt           # load address of prompt
-    syscall
+    # Simulate input (e.g., n = 6)
+    li $t1, 9              # Store input number in $t1
 
-    # Read user input (integer)
-    li $v0, 5                # syscall 5 = read int
-    syscall
-    move $t0, $v0            # store input in $t0
+    # Move input into $a0 again for is_odd function call
+    move $a0, $t1          # $a0 = input n (again)
+    jal is_odd             # Call is_odd function
+    move $t2, $v0          # $t3 will hold 1 if odd, 0 if even
 
-    # Copy input for subtraction
-    move $t1, $t0            # working copy in $t1
+    # Program ends here
+    j end_program
 
-loop:
-    # If $t1 >= 2, subtract 2 (for positive numbers)
-    bge $t1, 2, subtract_pos
+is_odd:
+    # Save return address
+    addi $sp, $sp, -4
+    sw $ra, 0($sp)
 
-    # If $t1 < 0, add 2 (for negative numbers)
-    blt $t1, 0, subtract_neg
+check_loop:
+    beq $a0, 0, is_even    # if number reduced to 0 -> even
+    beq $a0, 1, is_odd_ret # if number reduced to 1 -> odd
+    addi $a0, $a0, -2      # subtract 2
+    j check_loop           # continue loop
 
-    # If $t1 is now 0 or 1, we can decide even/odd
-    j check_result
+is_even:
+    li $v0, 0              # even
+    j end_is_odd
 
-subtract_pos:
-    subi $t1, $t1, 2         # $t1 = $t1 - 2
-    j loop
+is_odd_ret:
+    li $v0, 1              # odd
 
-subtract_neg:
-    addi $t1, $t1, 2         # $t1 = $t1 + 2
-    j loop
+end_is_odd:
+    lw $ra, 0($sp)         # restore return address
+    addi $sp, $sp, 4       # deallocate stack space
+    jr $ra                 # return to caller
 
-check_result:
-    # If remainder is 1 -> odd -> print "true"
-    beq $t1, 1, print_true
-
-    # Otherwise -> even -> print "false"
-    j print_false
-
-print_true:
-    li $v0, 4                # syscall 4 = print string
-    la $a0, true_msg         # load address of "true"
-    syscall
-    j end
-
-print_false:
-    li $v0, 4                # syscall 4 = print string
-    la $a0, false_msg        # load address of "false"
-    syscall
-
-end:
-    li $v0, 10               # syscall 10 = exit
-    syscall
+end_program:
+    nop                    # Placeholder for program end

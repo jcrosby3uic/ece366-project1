@@ -1,72 +1,68 @@
 .data
-prompt: .asciiz "Enter n: "  # Prompt message for user input
-result: .asciiz "Fib(n) = "  # Message to display result
 .text
 .globl main
 
-main:
-    # Print prompt message
-    li $v0, 4
-    la $a0, prompt
-    syscall
+# --------------------
+# Function: fibonacci
+# Calculates the nth Fibonacci number iteratively
+# Input : $t1 = n
+# Output: $t2 = Fibonacci(n)
+# --------------------
 
-    # Read integer input from user
-    li $v0, 5
-    syscall
-    move $a0, $v0  # Move user input to $a0
+main:
+    # Simulate input (e.g., n = 6)
+    li $t1, 6              # Store input number in $t1
+
+    # Move input into $a0 for function call
+    move $a0, $t1          # $a0 = input n
 
     # Call fibonacci function
-    jal fibonacci
-    move $t0, $v0  # Store result in $t0
+    jal fibonacci          # Jump and link to fibonacci
 
-    # Print result message
-    li $v0, 4
-    la $a0, result
-    syscall
+    # Move result from $v0 to register (simulate output)
+    move $t2, $v0          # $t2 will hold the result of Fibonacci(n)
 
-    # Print Fibonacci result
-    li $v0, 1
-    move $a0, $t0
-    syscall
-
-    # Exit program
-    li $v0, 10
-    syscall
+    # Program ends here 
+    j end_program
 
 fibonacci:
     # Function prologue - save return address and registers
-    addi $sp, $sp, -12   # Allocate stack space
-    sw $ra, 0($sp)       # Save return address
-    sw $s0, 4($sp)       # Save register $s0 (a)
-    sw $s1, 8($sp)       # Save register $s1 (b)
+    addi $sp, $sp, -12     # make space on stack for 3 words
+    sw $ra, 0($sp)         # save return address
+    sw $s0, 4($sp)         # save $s0 (used for 'a')
+    sw $s1, 8($sp)         # save $s1 (used for 'b')
 
     # Base case: if n <= 1, return n directly
-    ble $a0, 1, return_n
+    ble $a0, 1, return_n   # if n <= 1, skip loop and return n
 
-    # Initialize variables
-    li $s0, 0   # a = 0 (first Fibonacci number)
-    li $s1, 1   # b = 1 (second Fibonacci number)
-    addi $a0, $a0, -1  # n - 1 (loop counter)
+    # Initialize Fibonacci values
+    li $s0, 0              # a = 0
+    li $s1, 1              # b = 1
+    addi $a0, $a0, -1      # loop counter = n - 1
 
+# Loop to calculate Fibonacci iteratively
 loop:
-    beq $a0, 0, end_loop  # If counter reaches 0, exit loop
-    move $t0, $s1         # temp = b (store old b)
-    add $s1, $s0, $s1     # b = a + b (next Fibonacci number)
-    move $s0, $t0         # a = temp (update a)
-    addi $a0, $a0, -1     # Decrement loop counter
-    j loop                # Repeat loop
+    beq $a0, 0, end_loop   # if counter is 0, end loop
+    move $t0, $s1          # temp = b
+    add $s1, $s0, $s1      # b = a + b
+    move $s0, $t0          # a = temp
+    addi $a0, $a0, -1      # decrement loop counter
+    j loop                 # repeat loop
 
 end_loop:
-    move $v0, $s1  # Store final Fibonacci result in $v0
-    j exit_fib     # Jump to function exit
+    move $v0, $s1          # result = b (Fibonacci number)
+    j exit_fib             # jump to function epilogue
 
 return_n:
-    move $v0, $a0  # Return n directly if n <= 1
+    move $v0, $a0          # return n directly for base case
 
+# Function epilogue - restore registers and return
 exit_fib:
-    # Function epilogue - restore saved registers and return
-    lw $ra, 0($sp)  # Restore return address
-    lw $s0, 4($sp)  # Restore $s0 (a)
-    lw $s1, 8($sp)  # Restore $s1 (b)
-    addi $sp, $sp, 12  # Free stack space
-    jr $ra  # Return to caller
+    lw $ra, 0($sp)         # restore return address
+    lw $s0, 4($sp)         # restore $s0 (a)
+    lw $s1, 8($sp)         # restore $s1 (b)
+    addi $sp, $sp, 12      # deallocate stack space
+    jr $ra                 # return to caller
+
+end_program:
+    nop                    # Placeholder for program end
