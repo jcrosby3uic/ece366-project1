@@ -6,10 +6,10 @@ Leopold Serpe lserp2@uic.edu
 Project 2 Submission 1:
 Github link: https://github.com/jcrosby3uic/ece366-project1
 
-How to Run Fib & Odd Functions:
+How to Run Fib & Odd, isFibOdd Functions:
 Step 1) Run Program
-Step 2) Respond to prompt with input N
-Step 3) read result from screen 
+Step 2) Edit li statement with desired number
+Step 3) read result from screen showing register contents ($t2)
 Step 4) Celebrate!
 
 Summary:
