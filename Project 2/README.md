@@ -22,8 +22,5 @@ final result in $v0.
 
 Contributions:
 All team members met virtually to contribute to the project's code. Josh (Jcrosby) is the primary
-author of the MIPS file and pushed to the github. Leopold (lserp2) and Scott (skwok7) are the primary authors
- of this README file.
-
-
-
+author of the MIPS files for problem 1 and 2, and pushed to the github. Leopold Serps is the primary author of problem 3 (combined problems 1 and 2) 
+Leopold (lserp2) and Scott (skwok7) are the primary authors of this README file.
